@@ -31,9 +31,9 @@ def train_single_epoch(model, optimizer, scheduler, data_iter,
         loss   = loss_fn(p1, p2, y1, y2)
         loss_list.append(float(loss.item()))
 
-        loss.item().backward()
-        optimizer.step()
+        loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+        optimizer.step()
         scheduler.step()
 
     mean_loss = float(np.mean(loss_list))
@@ -48,7 +48,6 @@ def save_checkpoint(save_dir, ckpt_name, model, optimizer, scheduler,
     payload = {
         "model_state":     model.state_dict(),
         "optimizer_state": optimizer.state_dict(),
-        "scheduler_state": scheduler.state_dict(),
         "step":            step,
         "best_f1":         best_f1,
         "best_em":         best_em,
